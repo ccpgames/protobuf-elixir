@@ -30,8 +30,22 @@ defmodule Protobuf do
   """
 
   defmacro __using__(opts) do
+    type_path =
+      __CALLER__.module
+      |> Module.split()
+      |> Enum.split(-1)
+      |> (fn {path, msg} ->
+            Enum.map_join(path, ".", &String.downcase/1) <> ".#{msg}"
+          end).()
+
+    msg_key =
+      __CALLER__.module
+      |> Module.split()
+      |> Enum.map_join("_", &String.downcase/1)
+
     quote location: :keep do
       import Protobuf.DSL, only: [field: 3, field: 2, oneof: 2, extend: 4, extensions: 1]
+
       Module.register_attribute(__MODULE__, :fields, accumulate: true)
       Module.register_attribute(__MODULE__, :oneofs, accumulate: true)
       Module.register_attribute(__MODULE__, :extends, accumulate: true)
@@ -55,6 +69,14 @@ defmodule Protobuf do
       end
 
       unquote(def_encode_decode())
+
+      def type_url() do
+        "type.evetech.net/#{unquote(type_path)}"
+      end
+
+      def routing_key(tenant) do
+        "#{unquote(msg_key)}.#{tenant}"
+      end
     end
   end
 

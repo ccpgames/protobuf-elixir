@@ -226,4 +226,9 @@ defmodule Protobuf.DSLTest do
     assert msg_props.field_props[4].oneof == 1
     refute msg_props.field_props[5].oneof
   end
+
+  test "type_url" do
+    assert TestMsg.Type.Url.Long.Name.type_url() == "type.evetech.net/testmsg.type.url.long.Name"
+    assert TestMsg.Type.Url.Long.Name.routing_key("test") == "testmsg_type_url_long_name.test"
+  end
 end

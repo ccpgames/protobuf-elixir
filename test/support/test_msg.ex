@@ -7,6 +7,11 @@ defmodule TestMsg do
     defstruct []
   end
 
+  defmodule Type.Url.Long.Name do
+    use Protobuf, syntax: :proto3
+    defstruct []
+  end
+
   defmodule Foo.Bar do
     @moduledoc false
     use Protobuf, syntax: :proto3
